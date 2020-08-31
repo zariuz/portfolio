@@ -1,4 +1,4 @@
-## Portfolio project with React, Redux and TypeScript
+## Todo React, Redux-Toolkit and TypeScript
 
 In the project directory, you can run:
 

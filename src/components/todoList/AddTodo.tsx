@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addTodo } from './todoSlice';
 
 export default function AddTodo(): JSX.Element {
   const dispatch = useDispatch();
-  const [text, setText] = React.useState('');
+  const [text, setText] = useState('');
 
   function handleChange(e: { target: HTMLInputElement }) {
     setText(e.target.value);
