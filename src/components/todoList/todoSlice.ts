@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppThunk, AppDispatch } from 'redux/store';
+import { RootState } from 'redux/rootReducer';
+import { writeTodos, readTodos as fetchTodos } from 'api/jsonstore';
 import { Todo } from 'components/todoList/types';
 
 const initialState: Todo[] = [];
@@ -9,7 +11,10 @@ const todoSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo(state, action: PayloadAction<Todo>) {
+    receiveTodos(state, action: PayloadAction<Todo[]>) {
+      return action.payload;
+    },
+    receiveTodo(state, action: PayloadAction<Todo>) {
       state.push(action.payload);
     },
     toggleTodo(state, action: PayloadAction<Todo>) {
@@ -24,14 +29,29 @@ const todoSlice = createSlice({
 
 export const { toggleTodo } = todoSlice.actions;
 
-export const addTodo = (text: string): AppThunk => async (dispatch: AppDispatch) => {
+export const createTodoList = (): AppThunk => async (dispatch: AppDispatch) => {
+  const id = Math.random().toString(36).substr(2, 9);
+  window.history.pushState(null, document.title, `${id}`);
+};
+
+export const loadTodos = (): AppThunk => async (dispatch: AppDispatch) => {
+  const todos = await fetchTodos();
+  dispatch(todoSlice.actions.receiveTodos(todos));
+};
+
+export const addTodo = (text: string): AppThunk => async (
+  dispatch: AppDispatch,
+  getState: () => RootState,
+) => {
   const newTodo: Todo = {
     id: Math.random().toString(36).substr(2, 9),
     completed: false,
     text: text,
   };
 
-  dispatch(todoSlice.actions.addTodo(newTodo));
+  dispatch(todoSlice.actions.receiveTodo(newTodo));
+
+  writeTodos(getState().todos);
 };
 
 export default todoSlice.reducer;

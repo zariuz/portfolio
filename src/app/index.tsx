@@ -1,11 +1,22 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
-import './App.css';
 import TodoList from 'components/todoList/TodoList';
 import AddTodo from 'components/todoList/AddTodo';
 import Footer from 'components/visibilityFilter/Footer';
+import { loadTodos, createTodoList } from 'components/todoList/todoSlice';
 
-function App() {
+export default function App() {
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (window.location.pathname === '/') {
+      dispatch(createTodoList());
+    } else {
+      dispatch(loadTodos());
+    }
+  }, [dispatch]);
+
   return (
     <div>
       <AddTodo />
@@ -14,5 +25,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
